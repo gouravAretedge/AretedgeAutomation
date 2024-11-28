@@ -1,0 +1,11 @@
+{
+    "name": "automation-project",
+    "version": "1.0.0",
+    "description": "Automation Trigger with GitHub Actions",
+    "scripts": {
+      "test-case": "node test-case-runner.js",
+      "test-suite": "node test-suite-runner.js"
+    },
+    "dependencies": {}
+  }
+  
