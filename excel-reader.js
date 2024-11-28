@@ -12,3 +12,4 @@ function readExcel(file, callback) {
     };
     reader.readAsArrayBuffer(file);
 }
+

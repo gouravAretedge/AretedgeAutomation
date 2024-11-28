@@ -1,12 +1,20 @@
 let GITHUB_TOKEN = '';
 
-document.getElementById('load-tests').addEventListener('click', loadTestCases);
+// Run Test Suite Event Listener
 document.getElementById('run-suite').addEventListener('click', () => {
     if (!GITHUB_TOKEN) {
         alert('Please set a GitHub token first!');
         return;
     }
-    triggerWorkflow({ test_suite: true });
+
+    const selectedRadio = document.querySelector('input[name="test-case-select"]:checked');
+    if (!selectedRadio) {
+        alert('Please select a test case first!');
+        return;
+    }
+
+    const testCaseId = selectedRadio.value; // Get the selected test case ID
+    triggerWorkflow({ test_case_id: testCaseId }); // Pass the correct input
 });
 
 document.getElementById('set-token').addEventListener('click', () => {
@@ -56,32 +64,40 @@ function runTestCase(index) {
 }
 
 function triggerWorkflow(inputs) {
-    fetch(`https://api.github.com/repos/your-github-username/your-repo-name/actions/workflows/automation.yml/dispatches`, {
+    const owner = 'dasg24'; // Replace with your GitHub username or organization
+    const repo = 'TestUI'; // Replace with your repository name
+    const workflowId = 'ci.yml'; // The name of your workflow file in `.github/workflows`
+    const ref = 'master'; // The branch or tag to run the workflow on
+
+    fetch(`https://api.github.com/repos/${owner}/${repo}/actions/workflows/${workflowId}/dispatches`, {
         method: 'POST',
         headers: {
-            Authorization: `Bearer ${GITHUB_TOKEN}`,
+            Authorization: `Bearer ${GITHUB_TOKEN}`, // Ensure GITHUB_TOKEN is correctly set
             Accept: 'application/vnd.github.v3+json',
         },
         body: JSON.stringify({
-            ref: 'main',
-            inputs: inputs,
+            ref: ref, // The branch or tag name
+            inputs: {
+                testClass: 'com.aretedge.Test'  // Replace with the desired test class
+            }
         }),
     })
-    .then(response => {
-        if (response.ok) {
-            alert('Workflow triggered successfully!');
-        } else {
-            return response.json().then(err => {
-                console.error('Error triggering workflow:', err);
-                alert(`Failed to trigger workflow: ${err.message}`);
-            });
-        }
-    })
-    .catch(err => {
-        console.error('Network error:', err);
-        alert('Failed to connect to GitHub API');
-    });
+        .then(response => {
+            if (response.ok) {
+                alert('Workflow triggered successfully!');
+            } else {
+                return response.json().then(err => {
+                    console.error('Error triggering workflow:', err);
+                    alert(`Failed to trigger workflow: ${err.message}`);
+                });
+            }
+        })
+        .catch(err => {
+            console.error('Network error:', err);
+            alert('Failed to connect to GitHub API');
+        });
 }
+
 
 // Retrieve token from local storage on load
 const savedToken = localStorage.getItem('githubToken');
