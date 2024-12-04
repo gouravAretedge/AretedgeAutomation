@@ -12,8 +12,10 @@
     </header>
     <main>
         <section id="upload-section">
-            <label for="file-upload">Upload Test Case File:</label>
-            <input type="file" id="file-upload" accept=".xlsx">
+            <div class="form-group">
+                <label for="file-upload">Upload Test Case File:</label>
+                <input type="file" id="file-upload" accept=".xlsx">
+            </div>
             <button id="load-tests">Load Test Cases</button>
         </section>
         <section id="test-cases-section">
@@ -29,106 +31,39 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Test case rows with radio buttons will be dynamically added here -->
                     <tr>
-                        <td>
-                            <input type="radio" name="test-case-select" value="TC01">
-                        </td>
+                        <td><input type="radio" name="test-case-select" value="TC01"></td>
                         <td>TC01</td>
                         <td>Chat Automation 1v1</td>
                         <td>Not Run</td>
-                        <td>
-                            <button>Run</button>
-                        </td>
+                        <td><button>Run</button></td>
                     </tr>
                     <tr>
-                        <td>
-                            <input type="radio" name="test-case-select" value="TC02">
-                        </td>
+                        <td><input type="radio" name="test-case-select" value="TC02"></td>
                         <td>TC02</td>
                         <td>Chat Automation 2v2</td>
                         <td>Not Run</td>
-                        <td>
-                            <button>Run</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <input type="radio" name="test-case-select" value="TC03">
-                        </td>
-                        <td>TC03</td>
-                        <td>Round Robin Validation</td>
-                        <td>Not Run</td>
-                        <td>
-                            <button>Run</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <input type="radio" name="test-case-select" value="TC03">
-                        </td>
-                        <td>TC04</td>
-                        <td>Battle Royal Validation</td>
-                        <td>Not Run</td>
-                        <td>
-                            <button>Run</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <input type="radio" name="test-case-select" value="TC03">
-                        </td>
-                        <td>TC05</td>
-                        <td>Racing Validation</td>
-                        <td>Not Run</td>
-                        <td>
-                            <button>Run</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <input type="radio" name="test-case-select" value="TC03">
-                        </td>
-                        <td>TC06</td>
-                        <td>Single Elimination Validation </td>
-                        <td>Not Run</td>
-                        <td>
-                            <button>Run</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <input type="radio" name="test-case-select" value="TC03">
-                        </td>
-                        <td>TC07</td>
-                        <td>Double Elimination Validation</td>
-                        <td>Not Run</td>
-                        <td>
-                            <button>Run</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <input type="radio" name="test-case-select" value="TC03">
-                        </td>
-                        <td>TC08</td>
-                        <td>Circuit Point Automation</td>
-                        <td>Not Run</td>
-                        <td>
-                            <button>Run</button>
-                        </td>
+                        <td><button>Run</button></td>
                     </tr>
                 </tbody>
             </table>
         </section>
-        <section id="github-actions">
-            <h2>GitHub Actions</h2>
-            <label for="github-token">GitHub Token:</label>
-            <input type="password" id="github-token" placeholder="Enter your GitHub token">
-            <button id="set-token">Set Token</button>
+        <section id="config-section">
+            <h2>Configuration</h2>
+            <div class="form-group">
+                <label for="github-token">GitHub Token:</label>
+                <input type="password" id="github-token" placeholder="Enter your GitHub token">
+            </div>
+            <div class="form-group">
+                <label for="num-threads">Number of Threads:</label>
+                <input type="number" id="num-threads" min="1" value="1" placeholder="Enter number of threads">
+            </div>
+            <button id="set-config">Set Configuration</button>
         </section>
-        <button id="run-suite">Run Test Suite</button>
-        <button id="run-selected-test">Run Selected Test Case</button>
+        <section id="actions">
+            <button id="run-suite">Run Test Suite</button>
+            <button id="run-selected-test">Run Selected Test Case</button>
+        </section>
     </main>
     <footer>
         <p>&copy; 2024 Automation Trigger</p>

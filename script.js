@@ -64,10 +64,10 @@ function runTestCase(index) {
 }
 
 function triggerWorkflow(inputs) {
-    const owner = 'dasg24'; // Replace with your GitHub username or organization
-    const repo = 'TestUI'; // Replace with your repository name
+    const owner = 'gouravAretedge'; // Replace with your GitHub username or organization
+    const repo = 'GC-Automation'; // Replace with your repository name
     const workflowId = 'ci.yml'; // The name of your workflow file in `.github/workflows`
-    const ref = 'master'; // The branch or tag to run the workflow on
+    const ref = 'main'; // The branch or tag to run the workflow on
 
     fetch(`https://api.github.com/repos/${owner}/${repo}/actions/workflows/${workflowId}/dispatches`, {
         method: 'POST',
@@ -78,7 +78,7 @@ function triggerWorkflow(inputs) {
         body: JSON.stringify({
             ref: ref, // The branch or tag name
             inputs: {
-                testClass: 'com.aretedge.Test'  // Replace with the desired test class
+                testClass: 'com.aretedge.MyTestClass'  // Replace with the desired test class
             }
         }),
     })
