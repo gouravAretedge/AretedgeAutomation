@@ -178,3 +178,35 @@ function executeTestCase(param, className) {
             alert('Failed to connect to GitHub API.');
         });
 }
+
+// Event listener for "Run" buttons in the test cases table
+document.getElementById('test-cases-table').addEventListener('click', (event) => {
+    if (event.target.tagName === 'BUTTON' && event.target.classList.contains('action-btn')) {
+        const row = event.target.closest('tr'); // Find the closest table row
+        const statusElement = row.querySelector('.status'); // Get the status span
+        const testCaseId = row.querySelector('input[name="test-case-select"]').value; // Test Case ID
+        
+        // Update the status to "Running..." and disable the button
+        statusElement.textContent = 'Running...';
+        statusElement.className = 'status running'; // Update class for styling
+        event.target.disabled = true;
+
+        // Simulate the test case execution
+        simulateTestRun(testCaseId, statusElement, event.target);
+    }
+});
+
+// Function to simulate the test case execution
+function simulateTestRun(testCaseId, statusElement, buttonElement) {
+    console.log(`Starting test case: ${testCaseId}`);
+    
+    // Simulate an API call or workflow execution (example with timeout)
+    setTimeout(() => {
+        // Update the status to "Completed" and re-enable the button
+        statusElement.textContent = 'Completed';
+        statusElement.className = 'status completed'; // Update class for styling
+        buttonElement.disabled = false;
+
+        console.log(`Test case ${testCaseId} execution completed.`);
+    }, 3000); // Simulate a 3-second delay
+}
