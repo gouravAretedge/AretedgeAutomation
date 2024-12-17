@@ -1,105 +1,154 @@
-/* General Styles */
+/* Global Styles */
 body {
-    font-family: Arial, sans-serif;
-    line-height: 1.6;
+    font-family: 'Segoe UI', Tahoma, Geneva, sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f4f4f9;
+    background: #f9fafb;
     color: #333;
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
 /* Header Styles */
 header {
-    background: linear-gradient(90deg, #0078d7, #004ba0);
+    background: linear-gradient(90deg, #0078d7, #005bb5);
     color: #fff;
     padding: 2rem 0;
     text-align: center;
-    border-bottom: 4px solid #004ba0;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 header h1 {
     font-size: 2.5rem;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     text-transform: uppercase;
-    letter-spacing: 3px;
-    margin: 0;
-    text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.3);
-    color: #fff; /* Ensure the text remains white */
+    letter-spacing: 2px;
+    margin-bottom: 0.5rem;
 }
-/* Main Content */
+
+header p {
+    font-size: 1.2rem;
+    font-weight: 300;
+}
+
+/* Section Styles */
 main {
-    margin: 20px auto;
-    max-width: 80%;
+    padding: 2rem 0;
 }
 
 section {
-    margin-bottom: 2rem;
-    padding: 1rem;
     background: #fff;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
+    margin-bottom: 2rem;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-h1, h2 {
-    color: #444;
+section h2 {
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+    color: #0078d7;
 }
 
 /* Table Styles */
 table {
     width: 100%;
     border-collapse: collapse;
-    margin: 1rem 0;
+    margin: 1.5rem 0;
+    font-size: 1rem;
 }
 
 th, td {
+    padding: 12px 15px;
     text-align: left;
-    padding: 10px;
     border: 1px solid #ddd;
 }
 
 th {
-    background-color: #f2f2f2;
+    background: #f1f1f1;
+    font-weight: bold;
+}
+
+td .status {
+    padding: 4px 8px;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.status.not-run {
+    background: #ffc107;
+    color: #fff;
 }
 
 /* Button Styles */
 button {
-    padding: 8px 15px;
+    padding: 10px 15px;
     border: none;
     border-radius: 5px;
-    background-color: #0078d7;
-    color: white;
+    font-size: 1rem;
     cursor: pointer;
-    transition: background-color 0.3s;
+    transition: all 0.3s ease;
 }
 
-button:hover {
-    background-color: #005bb5;
+button.primary-btn {
+    background: #0078d7;
+    color: #fff;
 }
 
-/* Input Styles */
+button.primary-btn:hover {
+    background: #005bb5;
+}
+
+button.secondary-btn {
+    background: #6c757d;
+    color: #fff;
+}
+
+button.secondary-btn:hover {
+    background: #495057;
+}
+
+button.action-btn {
+    background: #28a745;
+    color: #fff;
+}
+
+button.action-btn:hover {
+    background: #218838;
+}
+
+/* Form Styles */
 input[type="file"],
 input[type="password"],
 input[type="number"] {
-    padding: 8px;
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
     border: 1px solid #ccc;
-    border-radius: 4px;
-    width: calc(100% - 18px);
+    border-radius: 5px;
 }
 
 label {
     font-weight: bold;
+    display: block;
+    margin-bottom: 5px;
 }
 
 /* Footer Styles */
 footer {
+    background: #f1f1f1;
     text-align: center;
-    margin-top: 2rem;
     padding: 1rem 0;
-    background: #f2f2f2;
+    margin-top: 2rem;
+    font-size: 0.9rem;
+    color: #555;
 }
 
-/* Form Group */
-.form-group {
-    margin-bottom: 15px;
+footer p {
+    margin: 0;
 }
