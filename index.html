@@ -43,14 +43,14 @@
                         <td>TC01</td>
                         <td>Chat Automation 1v1</td>
                         <td><span class="status not-run">Not Run</span></td>
-                        <td><button id="run-tc1" class="action-btn">Run</button></td>
+                        <td><button id="run-tc1" class="action-btn primary-btn">Run</button></td>
                     </tr>
                     <tr>
                         <td><input type="radio" name="test-case-select" value="TC02"></td>
                         <td>TC02</td>
                         <td>Chat Automation 2v2</td>
                         <td><span class="status not-run">Not Run</span></td>
-                        <td><button class="action-btn">Run</button></td>
+                        <td><button class="action-btn primary-btn">Run</button></td>
                     </tr>
                 </tbody>
             </table>
@@ -67,6 +67,37 @@
                 <input type="number" id="num-threads" min="1" value="1" placeholder="Enter number of threads">
             </div>
             <button id="set-config" class="primary-btn">Set Configuration</button>
+        </section>
+        
+        <section id="test-suites-section">
+            <h2>Test Suites</h2>
+            <table id="test-suites-table">
+                <thead>
+                    <tr>
+                        <th>Select</th>
+                        <th>Test Suite ID</th>
+                        <th>Description</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><input type="radio" name="test-suite-select" value="Suite01"></td>
+                        <td>Suite01</td>
+                        <td>Regression Test Suite</td>
+                        <td><span class="status not-run">Not Run</span></td>
+                        <td><button id="run-suite1" class="action-btn suite-run-btn">Run Suite</button></td>
+                    </tr>
+                    <tr>
+                        <td><input type="radio" name="test-suite-select" value="Suite02"></td>
+                        <td>Suite02</td>
+                        <td>Smoke Test Suite</td>
+                        <td><span class="status not-run">Not Run</span></td>
+                        <td><button id="run-suite2" class="action-btn suite-run-btn">Run Suite</button></td>
+                    </tr>
+                </tbody>
+            </table>
         </section>
         
         <section id="actions">
