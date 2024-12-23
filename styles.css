@@ -7,21 +7,21 @@ body, h1, h2, p, table, button {
 }
 
 body {
-    background: linear-gradient(to bottom, #1e3c72, #2a5298);
+    background: linear-gradient(to bottom, #243B55, #141E30);
     color: #ffffff;
     line-height: 1.6;
 }
 
 header {
-    background: linear-gradient(to right, #4e54c8, #8f94fb);
+    background: linear-gradient(to right, #2a5298, #1e3c72); /* Matches the main body background gradient */
     padding: 20px 0;
     text-align: center;
-    color: #fff;
+    color: #ffffff;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 header h1 {
-    font-size: 2.5rem;
+    font-size: 2.8rem;
     font-weight: 700;
     margin-bottom: 10px;
 }
@@ -33,6 +33,8 @@ header p {
 
 main {
     padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
 section {
@@ -47,6 +49,7 @@ section h2 {
     font-size: 1.8rem;
     margin-bottom: 15px;
     text-align: center;
+    color: #FFD700;
 }
 
 .form-group {
@@ -67,6 +70,7 @@ input[type="number"] {
     border-radius: 5px;
     border: 1px solid #ddd;
     margin-bottom: 10px;
+    background: #e6e6e6;
 }
 
 button {
@@ -80,22 +84,22 @@ button {
 }
 
 .primary-btn {
-    background: #4caf50;
-    color: #fff;
+    background: #FFD700;
+    color: #141E30;
 }
 
 .primary-btn:hover {
-    background: #45a049;
+    background: #FFC300;
     transform: translateY(-2px);
 }
 
 .secondary-btn {
-    background: #008cba;
+    background: #00A9F4;
     color: #fff;
 }
 
 .secondary-btn:hover {
-    background: #007bb5;
+    background: #007BB5;
     transform: translateY(-2px);
 }
 
@@ -104,16 +108,18 @@ table {
     border-collapse: collapse;
     margin-top: 15px;
     border: 1px solid #ddd;
+    background: rgba(0, 0, 0, 0.4);
 }
 
 table th, table td {
     text-align: center;
     padding: 12px;
     border: 1px solid #ddd;
+    color: #fff;
 }
 
 table th {
-    background: rgba(0, 0, 0, 0.6);
+    background: #4e54c8;
     color: #fff;
 }
 
@@ -132,23 +138,23 @@ table tbody tr:nth-child(even) {
 }
 
 .status.not-run {
-    background: #ff7043;
+    background: #F44336;
     color: #fff;
 }
 
 .status.running {
-    background: #ffca28;
+    background: #FFEB3B;
     color: #000;
 }
 
 .status.completed {
-    background: #4caf50;
+    background: #4CAF50;
     color: #fff;
 }
 
 footer {
-    background: #2a5298;
-    color: #fff;
+    background: #141E30;
+    color: #FFD700;
     text-align: center;
     padding: 10px 0;
     margin-top: 20px;
@@ -156,9 +162,22 @@ footer {
 }
 
 button.suite-run-btn {
-    background: #ff5722;
+    background: #FF5722;
 }
 
 button.suite-run-btn:hover {
-    background: #e64a19;
+    background: #E64A19;
+}
+
+.logo-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+#company-logo {
+    max-width: 100px;
+    max-height: 100px;
+    object-fit: contain;
 }
