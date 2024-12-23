@@ -210,3 +210,74 @@ function simulateTestRun(testCaseId, statusElement, buttonElement) {
         console.log(`Test case ${testCaseId} execution completed.`);
     }, 3000); // Simulate a 3-second delay
 }
+
+// GitHub API URL and authentication
+const apiUrl = "https://api.github.com/repos/gouravAretedge/AretedgeAutomationDemo/contents/test-results.json";
+const token = localStorage.getItem('githubToken');
+
+// Fetch file content from GitHub API
+function fetchTestResults() {
+    fetch(apiUrl, {
+        method: "GET",
+        headers: {
+            "Authorization": `token ${token}`,
+            "Accept": "application/vnd.github.v3+json"
+        }
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            const decodedContent = atob(data.content);
+            const jsonContent = JSON.parse(decodedContent);
+            console.log("Test Results:", jsonContent);
+            populateReportTable(jsonContent);
+        })
+        .catch(error => {
+            console.error("Error fetching file:", error);
+            document.querySelector('#test-results-table tbody').innerHTML = `
+                <tr>
+                    <td colspan="5" style="text-align: center;">Failed to load results: ${error.message}</td>
+                </tr>`;
+        });
+}
+
+// Populate the test results table
+function populateReportTable(data) {
+    const tableBody = document.querySelector('#test-results-table tbody');
+    tableBody.innerHTML = ''; // Clear previous data
+
+    const latestResults = data.slice(-10);
+
+    latestResults.forEach(test => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${test.testCaseId}</td>
+            <td>${test.description}</td>
+            <td>${test.status}</td>
+            <td>${test.executionTime || 'N/A'}</td>
+            <td>
+                <button class="details-btn" onclick="viewDetails('${test.detailsUrl}')">View Details</button>
+            </td>`;
+        tableBody.appendChild(row);
+    });
+
+    if (latestResults.length === 0) {
+        tableBody.innerHTML = `
+            <tr>
+                <td colspan="5" style="text-align: center;">No results available.</td>
+            </tr>`;
+    }
+}
+
+// Open details in a new tab
+function viewDetails(url) {
+    window.open(url, '_blank');
+}
+
+// Call the function when the page loads
+window.onload = fetchTestResults;
+

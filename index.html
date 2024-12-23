@@ -137,45 +137,6 @@
     <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
     <script src="excel-reader.js"></script>
     <script src="script.js"></script>
-    <script>
-        // Automatically fetch test results from GitHub when the page loads
-        window.onload = () => {
-            fetch('https://<your-username>.github.io/<your-repo-name>/test-results.json')
-                .then(response => response.json())
-                .then(data => populateReportTable(data))
-                .catch(error => {
-                    console.error('Error fetching test reports:', error);
-                    document.querySelector('#test-results-table tbody').innerHTML = `
-                        <tr>
-                            <td colspan="5" style="text-align: center;">Failed to load results.</td>
-                        </tr>`;
-                });
-        };
-
-        function populateReportTable(data) {
-            const tableBody = document.querySelector('#test-results-table tbody');
-            tableBody.innerHTML = ''; // Clear previous data
-
-            data.forEach(test => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${test.testCaseId}</td>
-                    <td>${test.description}</td>
-                    <td>${test.status}</td>
-                    <td>${test.executionTime || 'N/A'}</td>
-                    <td><button class="details-btn">View Details</button></td>
-                `;
-                tableBody.appendChild(row);
-            });
-
-            // If no test results are found
-            if (data.length === 0) {
-                tableBody.innerHTML = `
-                    <tr>
-                        <td colspan="5" style="text-align: center;">No results available.</td>
-                    </tr>`;
-            }
-        }
-    </script>
+    <script src="github-fetch.js"></script> <!-- Add this line -->
 </body>
 </html>
