@@ -94,12 +94,12 @@ function populateReportTable(data) {
             </tr>`;
     }
 
-    // Attach event listeners to "View Details" buttons
-    document.querySelectorAll(".details-btn").forEach(button => {
-        button.addEventListener("click", () => {
-            viewDetails();
-        });
-    });
+    // // Attach event listeners to "View Details" buttons
+    // document.querySelectorAll(".details-btn").forEach(button => {
+    //     button.addEventListener("click", () => {
+    //         viewDetails();
+    //     });
+    // });
 }
 
 // Save GitHub token and thread count
@@ -187,4 +187,76 @@ document.getElementById("run-tc1").addEventListener("click", () => {
 });
 document.getElementById("run-suite").addEventListener("click", () => {
     executeTestCase(THREAD_COUNT, "TestSuite");
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+    const updateTestCaseStatus = (row, newStatus) => {
+        const statusElement = row.querySelector(".status");
+        if (statusElement) {
+            statusElement.textContent = newStatus;
+            statusElement.className = `status ${newStatus.toLowerCase().replace(/\s+/g, '-')}`;
+        }
+    };
+
+    const executeTestCase = (testCaseId, row) => {
+        const GITHUB_TOKEN = localStorage.getItem('githubToken');
+        if (!GITHUB_TOKEN) {
+            alert("GitHub token not found. Please set it in the configuration.");
+            return;
+        }
+
+        // Update the status to Running...
+        updateTestCaseStatus(row, "Running...");
+
+        // Simulate the API call to execute the test case
+        fetch(`https://api.github.com/repos/gouravAretedge/AretedgeAutomationDemo/actions/workflows/ci.yml/dispatches`, {
+            method: "POST",
+            headers: {
+                Authorization: `Bearer ${GITHUB_TOKEN}`,
+                Accept: "application/vnd.github.v3+json",
+            },
+            body: JSON.stringify({
+                ref: "main",
+                inputs: {
+                    testClass: testCaseId,
+                },
+            }),
+        })
+            .then((response) => {
+                if (response.ok) {
+                    // Update the status to Completed
+                    updateTestCaseStatus(row, "Completed");
+                } else {
+                    throw new Error(`Failed to trigger workflow. HTTP status: ${response.status}`);
+                }
+            })
+            .catch((error) => {
+                console.error("Error executing test case:", error);
+                // Update the status to Failed
+                updateTestCaseStatus(row, "Failed");
+            });
+    };
+
+    // Attach event listeners to "Run" buttons
+    const testCaseTable = document.getElementById("test-cases-table");
+    testCaseTable.querySelectorAll(".action-btn").forEach((button) => {
+        button.addEventListener("click", (event) => {
+            const row = event.target.closest("tr");
+            const testCaseId = row.querySelector("td:nth-child(2)").textContent; // Get Test Case ID
+            executeTestCase(testCaseId, row);
+        });
+    });
+
+    const testSuiteTable = document.getElementById("test-suites-table");
+    testSuiteTable.querySelectorAll(".suite-run-btn").forEach((button) => {
+        button.addEventListener("click", (event) => {
+            const row = event.target.closest("tr");
+            const suiteId = row.querySelector("td:nth-child(2)").textContent; // Get Suite ID
+            // Simulate suite execution
+            updateTestCaseStatus(row, "Running...");
+            setTimeout(() => {
+                updateTestCaseStatus(row, "Completed");
+            }, 3000); // Mock delay for suite execution
+        });
+    });
 });
