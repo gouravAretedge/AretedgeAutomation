@@ -7,6 +7,7 @@
     <title>QA Automation Portal</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 </head>
 <body>
     <header>
@@ -108,28 +109,25 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td colspan="5" style="text-align: center;">Loading results...</td>
-                    </tr>
+                    
                 </tbody>
             </table>
         </section>
 
-        <section id="actions">
-            <h2>Actions</h2>
-            <button id="run-suite" class="primary-btn">Run Test Suite</button>
-            <button id="run-selected-test" class="secondary-btn">Run Selected Test Case</button>
+        <section id="artifacts-section">
+            <h2>Artifacts</h2>
+            <div id="artifacts-container">
+                <!-- Artifacts will be displayed here dynamically -->
+            </div>
+            <p id="error-message" class="error-message"></p>
         </section>
+
     </main>
     <footer>
         <div class="container">
             <p>&copy; 2024 Automation Trigger | All Rights Reserved</p>
         </div>
     </footer>
-    <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
-    <script src="excel-reader.js"></script>
     <script src="script.js"></script>
-    <script src="github-fetch.js"></script> <!-- Add this line -->
-    
 </body>
 </html>

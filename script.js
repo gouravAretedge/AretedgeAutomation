@@ -1,105 +1,31 @@
-// GitHub API URL and authentication
-const apiUrl = "https://api.github.com/repos/gouravAretedge/AretedgeAutomationDemo/contents/Extent.html";
-let GITHUB_TOKEN = localStorage.getItem('githubToken');
-let THREAD_COUNT = localStorage.getItem('threads_count');
+// GitHub API Configuration
+const owner = "gouravAretedge"; // Replace with your GitHub repo owner
+const repo = "AretedgeAutomationDemo"; // Replace with your GitHub repo name
+let GITHUB_TOKEN = localStorage.getItem("githubToken");
+let THREAD_COUNT = localStorage.getItem("threads_count");
 
-// View Extent.html details in a new tab
-function viewDetails() {
-    if (!GITHUB_TOKEN) {
-        alert("GitHub token not found. Please set it in the configuration.");
-        return;
+// Helper Functions
+const getConfigValue = (key, defaultValue = null) => localStorage.getItem(key) || defaultValue;
+const setConfigValue = (key, value) => localStorage.setItem(key, value);
+const alertAndLogError = (message, error) => {
+    console.error(message, error);
+    alert(message);
+};
+
+// Initialize Configuration
+function loadConfigurations() {
+    const savedToken = getConfigValue("githubToken");
+    const savedThreads = getConfigValue("threads_count");
+
+    if (savedToken) {
+        GITHUB_TOKEN = savedToken;
+        document.getElementById("github-token").value = savedToken;
     }
 
-    fetch(apiUrl, {
-        method: "GET",
-        headers: {
-            Authorization: `token ${GITHUB_TOKEN}`,
-            Accept: "application/vnd.github.v3.raw"
-        }
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`Failed to fetch details. HTTP status: ${response.status}`);
-        }
-        return response.text();
-    })
-    .then(htmlContent => {
-        const detailWindow = window.open("", "_blank");
-        detailWindow.document.open();
-        detailWindow.document.write(htmlContent);
-        detailWindow.document.close();
-    })
-    .catch(error => {
-        console.error("Error fetching details:", error);
-        alert("Failed to fetch details: " + error.message);
-    });
-}
-
-// Fetch and populate test results
-function fetchTestResults() {
-    const testResultsApiUrl = "https://api.github.com/repos/gouravAretedge/AretedgeAutomationDemo/contents/test-results.json";
-
-    fetch(testResultsApiUrl, {
-        method: "GET",
-        headers: {
-            Authorization: `token ${GITHUB_TOKEN}`,
-            Accept: "application/vnd.github.v3+json"
-        }
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        return response.json();
-    })
-    .then(data => {
-        const decodedContent = atob(data.content);
-        const jsonContent = JSON.parse(decodedContent);
-        console.log("Test Results:", jsonContent);
-        populateReportTable(jsonContent);
-    })
-    .catch(error => {
-        console.error("Error fetching file:", error);
-        document.querySelector("#test-results-table tbody").innerHTML = `
-            <tr>
-                <td colspan="5" style="text-align: center;">Failed to load results: ${error.message}</td>
-            </tr>`;
-    });
-}
-
-// Populate the test results table
-function populateReportTable(data) {
-    const tableBody = document.querySelector("#test-results-table tbody");
-    tableBody.innerHTML = ""; // Clear previous data
-
-    const latestResults = data.slice(-10);
-
-    latestResults.forEach(test => {
-        const row = document.createElement("tr");
-        row.innerHTML = `
-            <td>${test.testCaseId}</td>
-            <td>${test.description}</td>
-            <td>${test.status}</td>
-            <td>${test.executionTime || "N/A"}</td>
-            <td>
-                <button class="details-btn">View Details</button>
-            </td>`;
-        tableBody.appendChild(row);
-    });
-
-    if (latestResults.length === 0) {
-        tableBody.innerHTML = `
-            <tr>
-                <td colspan="5" style="text-align: center;">No results available.</td>
-            </tr>`;
+    if (savedThreads) {
+        THREAD_COUNT = savedThreads;
+        document.getElementById("num-threads").value = savedThreads;
     }
-
-    // // Attach event listeners to "View Details" buttons
-    // document.querySelectorAll(".details-btn").forEach(button => {
-    //     button.addEventListener("click", () => {
-    //         viewDetails();
-    //     });
-    // });
 }
 
 // Save GitHub token and thread count
@@ -117,8 +43,8 @@ function saveConfig() {
         return;
     }
 
-    localStorage.setItem("githubToken", token);
-    localStorage.setItem("threads_count", threadCount);
+    setConfigValue("githubToken", token);
+    setConfigValue("threads_count", threadCount);
     GITHUB_TOKEN = token;
     THREAD_COUNT = threadCount;
 
@@ -132,7 +58,7 @@ function executeTestCase(param, className) {
         return;
     }
 
-    fetch(`https://api.github.com/repos/gouravAretedge/AretedgeAutomationDemo/actions/workflows/ci.yml/dispatches`, {
+    fetch(`https://api.github.com/repos/${owner}/${repo}/actions/workflows/ci.yml/dispatches`, {
         method: "POST",
         headers: {
             Authorization: `Bearer ${GITHUB_TOKEN}`,
@@ -146,117 +72,192 @@ function executeTestCase(param, className) {
             },
         }),
     })
-    .then(response => {
-        if (response.ok) {
-            alert("Workflow triggered successfully!");
-        } else {
-            return response.json().then(err => {
-                console.error("Error triggering workflow:", err);
-                alert(`Failed to trigger workflow: ${err.message || "Unknown error"}`);
-            });
-        }
+        .then((response) => {
+            if (response.ok) {
+                alert("Workflow triggered successfully!");
+            } else {
+                return response.json().then((err) => {
+                    alertAndLogError("Error triggering workflow.", err);
+                });
+            }
+        })
+        .catch((err) => {
+            alertAndLogError("Network error: Failed to connect to GitHub API.", err);
+        });
+}
+
+// Fetch all artifacts when viewing details
+function fetchAllArtifacts() {
+    const artifactsUrl = `https://api.github.com/repos/${owner}/${repo}/actions/artifacts`;
+
+    fetch(artifactsUrl, {
+        method: "GET",
+        headers: {
+            Authorization: `Bearer ${GITHUB_TOKEN}`,
+            Accept: "application/vnd.github.v3+json",
+        },
     })
-    .catch(err => {
-        console.error("Network error:", err);
-        alert("Failed to connect to GitHub API.");
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then((artifactsData) => {
+            renderArtifacts(artifactsData.artifacts);
+        })
+        .catch((error) => {
+            alertAndLogError("Error fetching artifacts.", error);
+        });
+}
+
+// Render artifacts in the artifact section
+function renderArtifacts(artifacts) {
+    const artifactsContainer = document.getElementById("artifacts-section");
+    artifactsContainer.innerHTML = ""; // Clear previous content
+
+    if (artifacts.length === 0) {
+        artifactsContainer.innerHTML = "<p>No artifacts found.</p>";
+        return;
+    }
+
+    artifacts.forEach((artifact) => {
+        const artifactDiv = document.createElement("div");
+        artifactDiv.classList.add("artifact");
+        artifactDiv.innerHTML = `
+            <h4>${artifact.name}</h4>
+            <p>Created at: ${new Date(artifact.created_at).toLocaleString()}</p>
+            <button class="download-btn" data-artifact-id="${artifact.id}">Download</button>
+        `;
+        artifactsContainer.appendChild(artifactDiv);
+
+        // Add event listener to the download button
+        const downloadButton = artifactDiv.querySelector(".download-btn");
+        downloadButton.addEventListener("click", () => {
+            downloadArtifact(artifact.id);
+        });
     });
 }
 
-// Load configurations from localStorage
-document.addEventListener("DOMContentLoaded", () => {
-    const savedToken = localStorage.getItem("githubToken");
-    if (savedToken) {
-        GITHUB_TOKEN = savedToken;
-        document.getElementById("github-token").value = savedToken;
-    }
+// Download the artifact
+function downloadArtifact(artifactId) {
+    const downloadUrl = `https://api.github.com/repos/${owner}/${repo}/actions/artifacts/${artifactId}/zip`;
 
-    const savedThreads = localStorage.getItem("threads_count");
-    if (savedThreads) {
-        THREAD_COUNT = savedThreads;
-        document.getElementById("num-threads").value = savedThreads;
-    }
-
-    // Fetch and display test results on page load
-    fetchTestResults();
-});
-
-// Event listeners for configuration save and test case execution
-document.getElementById("set-config").addEventListener("click", saveConfig);
-document.getElementById("run-tc1").addEventListener("click", () => {
-    executeTestCase(THREAD_COUNT, "ValidateLogin");
-});
-document.getElementById("run-suite").addEventListener("click", () => {
-    executeTestCase(THREAD_COUNT, "TestSuite");
-});
-
-document.addEventListener("DOMContentLoaded", () => {
-    const updateTestCaseStatus = (row, newStatus) => {
-        const statusElement = row.querySelector(".status");
-        if (statusElement) {
-            statusElement.textContent = newStatus;
-            statusElement.className = `status ${newStatus.toLowerCase().replace(/\s+/g, '-')}`;
-        }
-    };
-
-    const executeTestCase = (testCaseId, row) => {
-        const GITHUB_TOKEN = localStorage.getItem('githubToken');
-        if (!GITHUB_TOKEN) {
-            alert("GitHub token not found. Please set it in the configuration.");
-            return;
-        }
-
-        // Update the status to Running...
-        updateTestCaseStatus(row, "Running...");
-
-        // Simulate the API call to execute the test case
-        fetch(`https://api.github.com/repos/gouravAretedge/AretedgeAutomationDemo/actions/workflows/ci.yml/dispatches`, {
-            method: "POST",
-            headers: {
-                Authorization: `Bearer ${GITHUB_TOKEN}`,
-                Accept: "application/vnd.github.v3+json",
-            },
-            body: JSON.stringify({
-                ref: "main",
-                inputs: {
-                    testClass: testCaseId,
-                },
-            }),
+    fetch(downloadUrl, {
+        method: "GET",
+        headers: {
+            Authorization: `Bearer ${GITHUB_TOKEN}`,
+            Accept: "application/vnd.github.v3.raw",
+        },
+    })
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.blob();
         })
-            .then((response) => {
-                if (response.ok) {
-                    // Update the status to Completed
-                    updateTestCaseStatus(row, "Completed");
-                } else {
-                    throw new Error(`Failed to trigger workflow. HTTP status: ${response.status}`);
-                }
-            })
-            .catch((error) => {
-                console.error("Error executing test case:", error);
-                // Update the status to Failed
-                updateTestCaseStatus(row, "Failed");
-            });
+        .then((blob) => extractAndRenderHTML(blob))
+        .catch((error) => {
+            alertAndLogError("Error downloading artifact.", error);
+        });
+}
+
+// Extract and render HTML content from the artifact
+function extractAndRenderHTML(blob) {
+    const reader = new FileReader();
+    reader.onload = function (event) {
+        const zip = new JSZip();
+        zip.loadAsync(event.target.result).then(contents => {
+            const htmlFile = Object.keys(contents.files).find(file => file.endsWith('Extent.html'));
+            if (htmlFile) {
+                zip.file(htmlFile).async('text').then(htmlContent => {
+                    const newWindow = window.open('', '_blank');
+                    if (newWindow) {
+                        newWindow.document.open();
+                        newWindow.document.write(htmlContent);
+                        newWindow.document.close();
+                    } else {
+                        alert("Popup blocker prevented opening the new tab.");
+                    }
+                });
+            } else {
+                alert("No HTML file found in artifact.");
+            }
+        });
     };
+    reader.readAsArrayBuffer(blob);
+}
 
-    // Attach event listeners to "Run" buttons
-    const testCaseTable = document.getElementById("test-cases-table");
-    testCaseTable.querySelectorAll(".action-btn").forEach((button) => {
-        button.addEventListener("click", (event) => {
-            const row = event.target.closest("tr");
-            const testCaseId = row.querySelector("td:nth-child(2)").textContent; // Get Test Case ID
-            executeTestCase(testCaseId, row);
+// Populate test results table
+function populateReportTable(data) {
+    const tableBody = document.querySelector("#test-results-table tbody");
+    tableBody.innerHTML = ""; // Clear previous data
+
+    const latestResults = data.slice(-10); // Get the last 10 results
+    latestResults.forEach((test) => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+            <td>${test.testCaseId}</td>
+            <td>${test.description}</td>
+            <td>${test.status}</td>
+            <td>${test.executionTime || "N/A"}</td>
+            <td>
+                <button class="details-btn action-btn primary-btn" data-artifact-id="${test.artifactId}">View Details</button>
+            </td>`;
+        tableBody.appendChild(row);
+    });
+
+    // Add click event to all view details buttons
+    const detailsButtons = document.querySelectorAll(".details-btn");
+    detailsButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+            fetchAllArtifacts(); // Fetch all artifacts when the button is clicked
         });
     });
 
-    const testSuiteTable = document.getElementById("test-suites-table");
-    testSuiteTable.querySelectorAll(".suite-run-btn").forEach((button) => {
-        button.addEventListener("click", (event) => {
-            const row = event.target.closest("tr");
-            const suiteId = row.querySelector("td:nth-child(2)").textContent; // Get Suite ID
-            // Simulate suite execution
-            updateTestCaseStatus(row, "Running...");
-            setTimeout(() => {
-                updateTestCaseStatus(row, "Completed");
-            }, 3000); // Mock delay for suite execution
+    if (!latestResults.length) {
+        tableBody.innerHTML = `<tr>
+            <td colspan="5" style="text-align: center;">No results available.</td>
+        </tr>`;
+    }
+}
+
+// Fetch test results
+function fetchTestResults() {
+    const testResultsApiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/test-results.json`;
+
+    fetch(testResultsApiUrl, {
+        method: "GET",
+        headers: {
+            Authorization: `Bearer ${GITHUB_TOKEN}`,
+            Accept: "application/vnd.github.v3+json",
+        },
+    })
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then((data) => {
+            const decodedContent = atob(data.content);
+            const jsonContent = JSON.parse(decodedContent);
+            populateReportTable(jsonContent);
+        })
+        .catch((error) => {
+            alertAndLogError("Error fetching test results.", error);
         });
+}
+
+// Event Handlers
+document.addEventListener("DOMContentLoaded", () => {
+    loadConfigurations();
+
+    document.getElementById("set-config").addEventListener("click", saveConfig);
+    document.getElementById("run-tc1").addEventListener("click", () => {
+        executeTestCase(THREAD_COUNT, "ValidateLogin");
     });
+
+    // Fetch test results on page load
+    fetchTestResults();
 });
