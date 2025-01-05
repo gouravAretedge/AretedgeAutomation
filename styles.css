@@ -197,3 +197,23 @@ button.suite-run-btn:hover {
 .details-btn:hover {
     background-color: #FFC300; /* Darker shade for hover effect */
 }
+
+.artifacts-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.artifacts-table th, .artifacts-table td {
+    border: 1px solid #4e54c8;
+    padding: 8px;
+    text-align: left;
+}
+
+.artifacts-table th {
+    background-color: #4e54c8;
+}
+
+.artifacts-table tr:hover {
+    background-color: #8d1e1e;
+}
+

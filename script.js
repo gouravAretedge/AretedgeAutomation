@@ -111,7 +111,7 @@ function fetchAllArtifacts() {
         });
 }
 
-// Render artifacts in the artifact section
+// Render artifacts in a structured table
 function renderArtifacts(artifacts) {
     const artifactsContainer = document.getElementById("artifacts-section");
     artifactsContainer.innerHTML = ""; // Clear previous content
@@ -121,22 +121,44 @@ function renderArtifacts(artifacts) {
         return;
     }
 
+    // Create table elements
+    const table = document.createElement("table");
+    table.classList.add("artifacts-table");
+
+    // Create table header
+    const thead = document.createElement("thead");
+    thead.innerHTML = `
+        <tr>
+            <th>Name</th>
+            <th>Created At</th>
+            <th>Actions</th>
+        </tr>
+    `;
+    table.appendChild(thead);
+
+    // Create table body
+    const tbody = document.createElement("tbody");
+
     artifacts.forEach((artifact) => {
-        const artifactDiv = document.createElement("div");
-        artifactDiv.classList.add("artifact");
-        artifactDiv.innerHTML = `
-            <h4>${artifact.name}</h4>
-            <p>Created at: ${new Date(artifact.created_at).toLocaleString()}</p>
-            <button class="download-btn" data-artifact-id="${artifact.id}">Download</button>
+        const row = document.createElement("tr");
+        row.innerHTML = `
+            <td>${artifact.name}</td>
+            <td>${new Date(artifact.created_at).toLocaleString()}</td>
+            <td>
+                <button class="download-btn" data-artifact-id="${artifact.id}">Download</button>
+            </td>
         `;
-        artifactsContainer.appendChild(artifactDiv);
+        tbody.appendChild(row);
 
         // Add event listener to the download button
-        const downloadButton = artifactDiv.querySelector(".download-btn");
+        const downloadButton = row.querySelector(".download-btn");
         downloadButton.addEventListener("click", () => {
             downloadArtifact(artifact.id);
         });
     });
+
+    table.appendChild(tbody);
+    artifactsContainer.appendChild(table);
 }
 
 // Download the artifact
