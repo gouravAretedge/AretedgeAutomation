@@ -204,7 +204,7 @@ button.suite-run-btn:hover {
 }
 
 .artifacts-table th, .artifacts-table td {
-    border: 1px solid #4e54c8;
+    border: 1px solid #fff;
     padding: 8px;
     text-align: left;
 }
