@@ -4,6 +4,16 @@ const repo = "AretedgeAutomationDemo"; // Replace with your GitHub repo name
 let GITHUB_TOKEN = localStorage.getItem("githubToken");
 let THREAD_COUNT = localStorage.getItem("threads_count");
 
+// Global variable to manage pagination and artifacts
+
+let currentPage = 1;
+
+const artifactsPerPage = 10;
+
+let artifacts = []; // Store fetched artifacts here
+
+
+
 // Helper Functions
 const getConfigValue = (key, defaultValue = null) => localStorage.getItem(key) || defaultValue;
 const setConfigValue = (key, value) => localStorage.setItem(key, value);
@@ -104,6 +114,9 @@ function fetchAllArtifacts() {
             return response.json();
         })
         .then((artifactsData) => {
+            artifacts = artifactsData.artifacts; // Store artifacts globally
+
+            currentPage = 1; // Reset to first page
             renderArtifacts(artifactsData.artifacts);
         })
         .catch((error) => {
@@ -111,7 +124,7 @@ function fetchAllArtifacts() {
         });
 }
 
-// Render artifacts in a structured table
+// Render artifacts in a structured table with pagination
 function renderArtifacts(artifacts) {
     const artifactsContainer = document.getElementById("artifacts-section");
     artifactsContainer.innerHTML = ""; // Clear previous content
@@ -121,7 +134,57 @@ function renderArtifacts(artifacts) {
         return;
     }
 
-    // Create table elements
+    // Calculate total pages
+    const totalPages = Math.ceil(artifacts.length / artifactsPerPage);
+
+    // Display initial artifacts for the first page
+    displayArtifacts(artifacts, currentPage);
+
+    // Create pagination controls
+    const paginationControls = document.createElement("div");
+    paginationControls.classList.add("pagination-controls");
+
+    // Previous Button
+    const prevButton = document.createElement("button");
+    prevButton.innerText = "Previous";
+    prevButton.disabled = currentPage === 1; // Disable if on the first page
+    prevButton.addEventListener("click", () => {
+        if (currentPage > 1) {
+            currentPage--;
+            displayArtifacts(artifacts, currentPage); // Update artifacts for the previous page
+            updatePaginationControls(totalPages);
+        }
+    });
+    paginationControls.appendChild(prevButton);
+
+    // Next Button
+    const nextButton = document.createElement("button");
+    nextButton.innerText = "Next";
+    nextButton.disabled = currentPage === totalPages; // Disable if on the last page
+    nextButton.addEventListener("click", () => {
+        if (currentPage < totalPages) {
+            currentPage++;
+            displayArtifacts(artifacts, currentPage); // Update artifacts for the next page
+            updatePaginationControls(totalPages);
+        }
+    });
+    paginationControls.appendChild(nextButton);
+
+    artifactsContainer.appendChild(paginationControls);
+}
+
+// Function to display artifacts for the current page
+function displayArtifacts(artifacts, page) {
+    const artifactsContainer = document.getElementById("artifacts-section");
+
+    // Clear previous content but keep pagination controls
+    const paginationControls = artifactsContainer.querySelector(".pagination-controls");
+    artifactsContainer.innerHTML = paginationControls ? paginationControls.outerHTML : "";
+
+    const startIndex = (page - 1) * artifactsPerPage;
+    const endIndex = startIndex + artifactsPerPage;
+    const artifactsToDisplay = artifacts.slice(startIndex, endIndex);
+
     const table = document.createElement("table");
     table.classList.add("artifacts-table");
 
@@ -139,7 +202,7 @@ function renderArtifacts(artifacts) {
     // Create table body
     const tbody = document.createElement("tbody");
 
-    artifacts.forEach((artifact) => {
+    artifactsToDisplay.forEach((artifact) => {
         const row = document.createElement("tr");
         row.innerHTML = `
             <td>${artifact.name}</td>
@@ -153,12 +216,47 @@ function renderArtifacts(artifacts) {
         // Add event listener to the download button
         const downloadButton = row.querySelector(".download-btn");
         downloadButton.addEventListener("click", () => {
-            downloadArtifact(artifact.id);
+            downloadArtifact(artifact.id); // Reuse the same download function
         });
     });
 
     table.appendChild(tbody);
-    artifactsContainer.appendChild(table);
+    artifactsContainer.insertBefore(table, artifactsContainer.firstChild);
+}
+
+// Function to update the state of pagination controls
+function updatePaginationControls(totalPages) {
+    const prevButton = document.querySelector(".pagination-controls button:first-child");
+    const nextButton = document.querySelector(".pagination-controls button:last-child");
+
+    prevButton.disabled = currentPage === 1;
+    nextButton.disabled = currentPage === totalPages;
+}
+
+// Update the fetchAllArtifacts function to store the fetched artifacts
+function fetchAllArtifacts() {
+    const artifactsUrl = `https://api.github.com/repos/${owner}/${repo}/actions/artifacts`;
+
+    fetch(artifactsUrl, {
+        method: "GET",
+        headers: {
+            Authorization: `Bearer ${GITHUB_TOKEN}`,
+            Accept: "application/vnd.github.v3+json",
+        },
+    })
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then((artifactsData) => {
+            artifacts = artifactsData.artifacts; // Store artifacts globally
+            renderArtifacts(artifacts);
+        })
+        .catch((error) => {
+            alertAndLogError("Error fetching artifacts.", error);
+        });
 }
 
 // Download the artifact
@@ -183,6 +281,7 @@ function downloadArtifact(artifactId) {
             alertAndLogError("Error downloading artifact.", error);
         });
 }
+
 
 // Extract and render HTML content from the artifact
 function extractAndRenderHTML(blob) {
@@ -283,3 +382,5 @@ document.addEventListener("DOMContentLoaded", () => {
     // Fetch test results on page load
     fetchTestResults();
 });
+
+

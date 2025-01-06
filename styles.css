@@ -217,3 +217,14 @@ button.suite-run-btn:hover {
     background-color: #8d1e1e;
 }
 
+.pagination-controls {
+    margin-top: 20px;
+}
+
+.pagination-controls button {
+    margin: 0 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+
