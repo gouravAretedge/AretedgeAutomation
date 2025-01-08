@@ -5,14 +5,10 @@ let GITHUB_TOKEN = localStorage.getItem("githubToken");
 let THREAD_COUNT = localStorage.getItem("threads_count");
 
 // Global variable to manage pagination and artifacts
-
 let currentPage = 1;
-
 const artifactsPerPage = 10;
-
 let artifacts = []; // Store fetched artifacts here
-
-
+let testResults = []; // Store fetched test results here
 
 // Helper Functions
 const getConfigValue = (key, defaultValue = null) => localStorage.getItem(key) || defaultValue;
@@ -62,10 +58,17 @@ function saveConfig() {
 }
 
 // Execute a test case
-function executeTestCase(param, className) {
+function executeTestCase(param, className, testCaseId) {
     if (!GITHUB_TOKEN) {
         alert("GitHub token not set. Please configure it first.");
         return;
+    }
+
+    // Update test case status to "Running"
+    const statusElement = document.querySelector(`#test-case-${testCaseId} .status`);
+    if (statusElement) {
+        statusElement.textContent = "Running";
+        statusElement.className = "status running"; // Apply running style
     }
 
     fetch(`https://api.github.com/repos/${owner}/${repo}/actions/workflows/ci.yml/dispatches`, {
@@ -85,16 +88,40 @@ function executeTestCase(param, className) {
         .then((response) => {
             if (response.ok) {
                 alert("Workflow triggered successfully!");
+                // Simulate workflow monitoring and completion
+                setTimeout(() => {
+                    updateTestCaseStatus(testCaseId, "Completed");
+                }, 10000); // Replace with actual monitoring logic
             } else {
                 return response.json().then((err) => {
                     alertAndLogError("Error triggering workflow.", err);
+                    updateTestCaseStatus(testCaseId, "Failed");
                 });
             }
         })
         .catch((err) => {
             alertAndLogError("Network error: Failed to connect to GitHub API.", err);
+            updateTestCaseStatus(testCaseId, "Failed");
         });
 }
+
+// Update test case status
+function updateTestCaseStatus(testCaseId, status) {
+    const statusElement = document.querySelector(`#test-case-${testCaseId} .status`);
+    if (statusElement) {
+        statusElement.textContent = status;
+        statusElement.className = `status ${status.toLowerCase()}`; // Apply appropriate style
+    }
+}
+
+// Check for test results and update status
+// function checkTestResults() {
+//     setTimeout(() => {
+//         fetchTestResults(); // Fetch the latest test results
+//         // Call this function again until the tests are completed
+//         checkTestResults(); 
+//     }, 5000); // Adjust time as necessary
+// }
 
 // Fetch all artifacts when viewing details
 function fetchAllArtifacts() {
@@ -115,8 +142,6 @@ function fetchAllArtifacts() {
         })
         .then((artifactsData) => {
             artifacts = artifactsData.artifacts; // Store artifacts globally
-
-            currentPage = 1; // Reset to first page
             renderArtifacts(artifactsData.artifacts);
         })
         .catch((error) => {
@@ -282,7 +307,6 @@ function downloadArtifact(artifactId) {
         });
 }
 
-
 // Extract and render HTML content from the artifact
 function extractAndRenderHTML(blob) {
     const reader = new FileReader();
@@ -363,7 +387,8 @@ function fetchTestResults() {
         .then((data) => {
             const decodedContent = atob(data.content);
             const jsonContent = JSON.parse(decodedContent);
-            populateReportTable(jsonContent);
+            testResults = jsonContent; // Store the results globally
+            populateReportTable(testResults);
         })
         .catch((error) => {
             alertAndLogError("Error fetching test results.", error);
@@ -376,11 +401,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.getElementById("set-config").addEventListener("click", saveConfig);
     document.getElementById("run-tc1").addEventListener("click", () => {
-        executeTestCase(THREAD_COUNT, "ValidateLogin");
+        //executeTestCase(THREAD_COUNT, "ValidateLogin");
     });
 
     // Fetch test results on page load
     fetchTestResults();
 });
-
-
