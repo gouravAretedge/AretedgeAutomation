@@ -1,6 +1,6 @@
 // GitHub API Configuration
 const owner = "gouravAretedge"; // Replace with your GitHub repo owner
-const repo = "AretedgeAutomationDemo"; // Replace with your GitHub repo name
+const repo = "GC-Automation"; // Replace with your GitHub repo name
 let GITHUB_TOKEN = localStorage.getItem("githubToken");
 let THREAD_COUNT = localStorage.getItem("threads_count");
 
