@@ -353,7 +353,6 @@ function populateReportTable(data) {
     latestResults.forEach((test) => {
         const row = document.createElement("tr");
         row.innerHTML = `
-            <td>${test.testCaseId}</td>
             <td>${test.description}</td>
             <td>${test.status}</td>
             <td>${test.executionTime || "N/A"}</td>
