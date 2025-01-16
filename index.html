@@ -28,7 +28,6 @@
             <table id="test-cases-table">
                 <thead>
                     <tr>
-                        <th>Select</th>
                         <th>Test Case ID</th>
                         <th>Description</th>
                         <th>Status</th>
@@ -37,7 +36,7 @@
                 </thead>
                 <tbody>
                     <tr id="test-case-TC01">
-                        <td><input type="radio" name="test-case-select" value="TC01"></td>
+
                         <td>TC01</td>
                         <td>GC Login Automation</td>
                         <td><span class="status not-run">Not Run</span></td>
@@ -45,7 +44,7 @@
                                 onclick="executeTestCase(THREAD_COUNT, 'LoginSignup')">Run</button></td>
                     </tr>
                     <tr id="test-case-TC02">
-                        <td><input type="radio" name="test-case-select" value="TC02"></td>
+
                         <td>TC02</td>
                         <td>Chat Automation 1v1</td>
                         <td><span class="status not-run">Not Run</span></td>
@@ -53,12 +52,54 @@
                                 onclick="executeTestCase(THREAD_COUNT, 'ChatValidation')">Run</button></td>
                     </tr>
                     <tr id="test-case-TC03">
-                        <td><input type="radio" name="test-case-select" value="TC02"></td>
                         <td>TC03</td>
                         <td>Chat Automation 2v2</td>
                         <td><span class="status not-run">Not Run</span></td>
                         <td><button id="run-tc2" class="action-btn primary-btn"
-                                onclick="executeTestCase(THREAD_COUNT, 'AnotherTestClass')">Run</button></td>
+                                onclick="executeTestCase(THREAD_COUNT, 'TeamChatValidation')">Run</button></td>
+                    </tr>
+                    <tr id="test-case-TC04">
+                        <td>TC04</td>
+                        <td>Bulletin Board Validation</td>
+                        <td><span class="status not-run">Not Run</span></td>
+                        <td><button id="run-tc2" class="action-btn primary-btn"
+                                onclick="executeTestCase(THREAD_COUNT, 'BulletinBoardValidation')">Run</button></td>
+                    </tr>
+                    <tr id="test-case-TC05">
+                        <td>TC05</td>
+                        <td>Single Elimination API Validation</td>
+                        <td><span class="status not-run">Not Run</span></td>
+                        <td><button id="run-tc2" class="action-btn primary-btn"
+                                onclick="executeTestCase(THREAD_COUNT, 'SingleEliminationValidationApi')">Run</button>
+                        </td>
+                    </tr>
+                    <tr id="test-case-TC06">
+                        <td>TC06</td>
+                        <td>Battle Royle Validation</td>
+                        <td><span class="status not-run">Not Run</span></td>
+                        <td><button id="run-tc2" class="action-btn primary-btn"
+                                onclick="executeTestCase(THREAD_COUNT, 'BattleRoyleValidation')">Run</button></td>
+                    </tr>
+                    <tr id="test-case-TC07">
+                        <td>TC07</td>
+                        <td>Double Elimination Validation</td>
+                        <td><span class="status not-run">Not Run</span></td>
+                        <td><button id="run-tc2" class="action-btn primary-btn"
+                                onclick="executeTestCase(THREAD_COUNT, 'DoubleElimination')">Run</button></td>
+                    </tr>
+                    <tr id="test-case-TC08">
+                        <td>TC08</td>
+                        <td>Racing Validation</td>
+                        <td><span class="status not-run">Not Run</span></td>
+                        <td><button id="run-tc2" class="action-btn primary-btn"
+                                onclick="executeTestCase(THREAD_COUNT, 'RacingValidation')">Run</button></td>
+                    </tr>
+                    <tr id="test-case-TC09">
+                        <td>TC09</td>
+                        <td>Round Robin Validation</td>
+                        <td><span class="status not-run">Not Run</span></td>
+                        <td><button id="run-tc2" class="action-btn primary-btn"
+                                onclick="executeTestCase(THREAD_COUNT, 'RoundRobinValidation')">Run</button></td>
                     </tr>
                 </tbody>
             </table>
