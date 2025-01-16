@@ -9,6 +9,7 @@ let currentPage = 1;
 const artifactsPerPage = 10;
 let artifacts = []; // Store fetched artifacts here
 let testResults = []; // Store fetched test results here
+const testCaseIDGlobal = "";
 
 // Helper Functions
 const getConfigValue = (key, defaultValue = null) => localStorage.getItem(key) || defaultValue;
@@ -59,6 +60,7 @@ function saveConfig() {
 
 // Execute a test case
 function executeTestCase(param, className, testCaseId) {
+    //testCaseIDGlobal = testCaseId;
     if (!GITHUB_TOKEN) {
         alert("GitHub token not set. Please configure it first.");
         return;
@@ -162,50 +164,42 @@ function renderArtifacts(artifacts) {
     // Calculate total pages
     const totalPages = Math.ceil(artifacts.length / artifactsPerPage);
 
-    // Display initial artifacts for the first page
-    displayArtifacts(artifacts, currentPage);
+    // Display artifacts for the current page
+    displayArtifacts(artifactsContainer, artifacts, currentPage);
 
-    // Create pagination controls
+    // Add pagination controls
     const paginationControls = document.createElement("div");
     paginationControls.classList.add("pagination-controls");
 
-    // Previous Button
     const prevButton = document.createElement("button");
     prevButton.innerText = "Previous";
     prevButton.disabled = currentPage === 1; // Disable if on the first page
     prevButton.addEventListener("click", () => {
         if (currentPage > 1) {
             currentPage--;
-            displayArtifacts(artifacts, currentPage); // Update artifacts for the previous page
-            updatePaginationControls(totalPages);
+            updatePage(artifactsContainer, artifacts, currentPage, totalPages, prevButton, nextButton);
         }
     });
-    paginationControls.appendChild(prevButton);
 
-    // Next Button
     const nextButton = document.createElement("button");
     nextButton.innerText = "Next";
     nextButton.disabled = currentPage === totalPages; // Disable if on the last page
     nextButton.addEventListener("click", () => {
         if (currentPage < totalPages) {
             currentPage++;
-            displayArtifacts(artifacts, currentPage); // Update artifacts for the next page
-            updatePaginationControls(totalPages);
+            updatePage(artifactsContainer, artifacts, currentPage, totalPages, prevButton, nextButton);
         }
     });
-    paginationControls.appendChild(nextButton);
 
+    paginationControls.appendChild(prevButton);
+    paginationControls.appendChild(nextButton);
     artifactsContainer.appendChild(paginationControls);
+
+    // Update button states initially
+    updatePaginationControls(currentPage, totalPages, prevButton, nextButton);
 }
 
-// Function to display artifacts for the current page
-function displayArtifacts(artifacts, page) {
-    const artifactsContainer = document.getElementById("artifacts-section");
-
-    // Clear previous content but keep pagination controls
-    const paginationControls = artifactsContainer.querySelector(".pagination-controls");
-    artifactsContainer.innerHTML = paginationControls ? paginationControls.outerHTML : "";
-
+function displayArtifacts(container, artifacts, page) {
     const startIndex = (page - 1) * artifactsPerPage;
     const endIndex = startIndex + artifactsPerPage;
     const artifactsToDisplay = artifacts.slice(startIndex, endIndex);
@@ -246,17 +240,31 @@ function displayArtifacts(artifacts, page) {
     });
 
     table.appendChild(tbody);
-    artifactsContainer.insertBefore(table, artifactsContainer.firstChild);
+    container.appendChild(table);
 }
 
-// Function to update the state of pagination controls
-function updatePaginationControls(totalPages) {
-    const prevButton = document.querySelector(".pagination-controls button:first-child");
-    const nextButton = document.querySelector(".pagination-controls button:last-child");
+function updatePage(container, artifacts, page, totalPages, prevButton, nextButton) {
+    container.innerHTML = ""; // Clear previous content
+    displayArtifacts(container, artifacts, page); // Display new artifacts for the current page
 
+    // Add pagination controls again
+    const paginationControls = document.createElement("div");
+    paginationControls.classList.add("pagination-controls");
+    paginationControls.appendChild(prevButton);
+    paginationControls.appendChild(nextButton);
+
+    container.appendChild(paginationControls);
+
+    // Update button states
+    updatePaginationControls(page, totalPages, prevButton, nextButton);
+}
+
+function updatePaginationControls(currentPage, totalPages, prevButton, nextButton) {
     prevButton.disabled = currentPage === 1;
     nextButton.disabled = currentPage === totalPages;
 }
+
+
 
 // Update the fetchAllArtifacts function to store the fetched artifacts
 function fetchAllArtifacts() {
@@ -307,13 +315,16 @@ function downloadArtifact(artifactId) {
         });
 }
 
-// Extract and render HTML content from the artifact
+// Extract and render HTML content from the artifact dynamically based on the selected test case
 function extractAndRenderHTML(blob) {
     const reader = new FileReader();
     reader.onload = function (event) {
         const zip = new JSZip();
         zip.loadAsync(event.target.result).then(contents => {
-            const htmlFile = Object.keys(contents.files).find(file => file.endsWith('Extent.html'));
+            // Construct the expected file name dynamically
+            const expectedHtmlFile = `Extent.html`;
+            const htmlFile = Object.keys(contents.files).find(file => file.endsWith(expectedHtmlFile));
+
             if (htmlFile) {
                 zip.file(htmlFile).async('text').then(htmlContent => {
                     const newWindow = window.open('', '_blank');
@@ -326,7 +337,7 @@ function extractAndRenderHTML(blob) {
                     }
                 });
             } else {
-                alert("No HTML file found in artifact.");
+                alert(`No HTML file found for test case: ${testCaseName}`);
             }
         });
     };

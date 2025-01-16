@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,6 +10,7 @@
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 </head>
+
 <body>
     <header>
         <div class="container">
@@ -20,7 +22,7 @@
         </div>
     </header>
     <main>
-        
+
         <section id="test-cases-section">
             <h2>Test Cases</h2>
             <table id="test-cases-table">
@@ -39,26 +41,29 @@
                         <td>TC01</td>
                         <td>GC Login Automation</td>
                         <td><span class="status not-run">Not Run</span></td>
-                        <td><button id="run-tc1" class="action-btn primary-btn" onclick="executeTestCase(THREAD_COUNT, 'LoginSignup', 'TC01')">Run</button></td>
+                        <td><button id="run-tc1" class="action-btn primary-btn"
+                                onclick="executeTestCase(THREAD_COUNT, 'LoginSignup')">Run</button></td>
                     </tr>
                     <tr id="test-case-TC02">
                         <td><input type="radio" name="test-case-select" value="TC02"></td>
                         <td>TC02</td>
                         <td>Chat Automation 1v1</td>
                         <td><span class="status not-run">Not Run</span></td>
-                        <td><button id="run-tc2" class="action-btn primary-btn" onclick="executeTestCase(THREAD_COUNT, 'AnotherTestClass', 'TC02')">Run</button></td>
+                        <td><button id="run-tc2" class="action-btn primary-btn"
+                                onclick="executeTestCase(THREAD_COUNT, 'ChatValidation')">Run</button></td>
                     </tr>
                     <tr id="test-case-TC03">
                         <td><input type="radio" name="test-case-select" value="TC02"></td>
                         <td>TC03</td>
                         <td>Chat Automation 2v2</td>
                         <td><span class="status not-run">Not Run</span></td>
-                        <td><button id="run-tc2" class="action-btn primary-btn" onclick="executeTestCase(THREAD_COUNT, 'AnotherTestClass', 'TC02')">Run</button></td>
+                        <td><button id="run-tc2" class="action-btn primary-btn"
+                                onclick="executeTestCase(THREAD_COUNT, 'AnotherTestClass')">Run</button></td>
                     </tr>
-                </tbody>                
+                </tbody>
             </table>
         </section>
-        
+
         <section id="config-section">
             <h2>Configuration</h2>
             <div class="form-group">
@@ -71,7 +76,7 @@
             </div>
             <button id="set-config" class="primary-btn">Set Configuration</button>
         </section>
-        
+
         <!-- <section id="test-suites-section">
             <h2>Test Suites</h2>
             <table id="test-suites-table">
@@ -102,7 +107,7 @@
                 </tbody>
             </table>
         </section> -->
-        
+
         <section id="test-results-section">
             <h2>Test Results</h2>
             <table id="test-results-table">
@@ -116,7 +121,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    
+
                 </tbody>
             </table>
         </section>
@@ -131,7 +136,7 @@
 
     </main>
 
-    
+
     <footer>
         <div class="container">
             <p>&copy; 2024 Automation Trigger | All Rights Reserved</p>
@@ -139,4 +144,5 @@
     </footer>
     <script src="script.js"></script>
 </body>
+
 </html>
