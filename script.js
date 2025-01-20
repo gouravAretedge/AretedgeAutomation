@@ -227,7 +227,7 @@ function displayArtifacts(container, artifacts, page) {
             <td>${artifact.name}</td>
             <td>${new Date(artifact.created_at).toLocaleString()}</td>
             <td>
-                <button class="download-btn" data-artifact-id="${artifact.id}">Download</button>
+                <button class="download-btn" data-artifact-id="${artifact.id}">HTML Report</button>
             </td>
         `;
         tbody.appendChild(row);
